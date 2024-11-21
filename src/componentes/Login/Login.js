@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from "axios";
-//import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 const Login = () => {
     const [usuario, setUsuario] = useState('');
     const [contrasena, setContrasena] = useState('');
     const navigation = useNavigation();
     const iniciarSesion = async () => {
         try {
-            const respuesta = await axios.post('/api/usuarios/iniciarsesion', { login: usuario, contrasena: contrasena });
-            Alert.alert(respuesta.data);
+            const respuesta = await axios.post('http://IP/api/usuarios/iniciarsesion', { login: usuario, contrasena: contrasena });
+            const datos = respuesta.data;
+            if(datos.Usuario)
+            {
+                Alert.alert(datos.Usuario.datoPersonales.nombreCompleto);
+            }else{
+                Alert.alert(datos.error);
+            }
         } catch (error) {
             Alert.alert(error);
         }
@@ -31,7 +37,7 @@ const Login = () => {
                 onChangeText={(text) => setContrasena(text)}
             />
             <Button title="Iniciar" onPress={iniciarSesion} />
-        {/*<Button title="Desea recuperar la contraseña?" onPress={() => navigation.navigate('RecuperarContrasena')} />*/} 
+            <Button title="Recuparar Contraseña?" onPress={() => navigation.navigate('EnviarPin')} />
         </View>
     );
 };
